@@ -14,6 +14,25 @@ pipeline {
             }
         }
 
+        stage('SonarQube Analysis') {
+            steps {
+                script {
+                    def mvn = tool 'Default Maven'
+                    withSonarQubeEnv() {
+                        sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TestSonarQube -Dsonar.projectName='TestSonarQube'"
+                    }
+                }
+            }
+        }
+
+        stage('Quality Gate') {
+            steps {
+                timeout(time: 5, unit: 'MINUTES') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+
         stage('Build and Push Images') {
             steps {
                 withCredentials([usernamePassword(
