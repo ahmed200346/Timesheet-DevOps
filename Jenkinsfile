@@ -18,8 +18,8 @@ pipeline {
             steps {
                 script {
                     def mvn = tool 'Default Maven'
-                    withSonarQubeEnv() {
-                        sh "${mvn}/bin/mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TestSonarQube -Dsonar.projectName='TestSonarQube'"
+                    withSonarQubeEnv('SQ1') {
+                        sh "${mvn}/bin/mvn -f backend/pom.xml clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=TestSonarQube -Dsonar.projectName='TestSonarQube' -Dsonar.host.url=http://172.17.159.52:9000"
                     }
                 }
             }
